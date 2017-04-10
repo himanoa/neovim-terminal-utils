@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+import os
+
+from neovim import attach
+addr = os.environ.get("NVIM_LISTEN_ADDRESS", None)
+if not addr:
+    print('not found nvim process.')
+
+nvim = attach("socket", path=addr)
+
+def _setup():
+    pwd = os.getcwd()
+    nvim.command('cd {0}'.format(pwd))
+_setup()

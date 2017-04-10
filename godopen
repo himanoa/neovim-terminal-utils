@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+"""Edit a file in the host nvim instance."""
+from __future__ import print_function
+import os
+import sys
+import argparse
+
+from neovim import attach
+
+parser = argparse.ArgumentParser()
+parser.add_argument("filename", help="開くファイル名を指定する")
+parser.add_argument("-v", "--vertical", help="vsで開いたのと同義になります", action='store_true')
+parser.add_argument("-s", "--split", help="spで開いたのと同義になります", action='store_true')
+parser.add_argument("-t", "--tab", help="tabnewで開いたのと同義になります", action='store_true')
+parser.add_argument("-S", "--sync", help="同期的になるやつ", action='store_true')
+args = parser.parse_args()
+
+addr = os.environ.get("NVIM_LISTEN_ADDRESS", None)
+if not addr:
+    print('not wakeup nvim.')
+
+nvim = attach("socket", path=addr)
+
+
+def _setup():
+    nvim.input('<c-\\><c-n>')  # exit terminal mode
+    if args.vertical:
+        nvim.command('vs {0}'.format(args.filename))
+    elif args.split:
+        nvim.command('sp {0}'.format(args.filename))
+    elif args.tab:
+        nvim.command('tabnew {0}'.format(args.filename))
+    else:
+        nvim.command('e {0}'.format(args.filename))
+
+def _stop(*args):
+    nvim.stop_loop()
+
+if args.sync:
+    nvim.run_loop(_stop,_stop,_setup)
+else:
+    _setup()
