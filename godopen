@@ -32,6 +32,10 @@ def _setup():
         nvim.command('tabnew {0}'.format(args.filename))
     else:
         nvim.command('e {0}'.format(args.filename))
+    _exit_when_deleted()
+
+def _exit_when_deleted():
+    nvim.command('autocmd BufDelete <buffer> call system("kill {0}")'.format(os.getpid()))
 
 def _stop(*args):
     nvim.stop_loop()
