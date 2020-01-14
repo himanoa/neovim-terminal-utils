@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Edit a file in the host nvim instance."""
 from __future__ import print_function
+from pathlib import Path
 import os
 import sys
 import argparse
@@ -25,13 +26,13 @@ nvim = attach("socket", path=addr)
 def _setup():
     nvim.input('<c-\\><c-n>')  # exit terminal mode
     if args.vertical:
-        nvim.command('vs {0}'.format(args.filename))
+        nvim.command('vs {0}'.format(Path(args.filename).resolve()))
     elif args.split:
-        nvim.command('sp {0}'.format(args.filename))
+        nvim.command('sp {0}'.format(Path(args.filename).resolve()))
     elif args.tab:
-        nvim.command('tabnew {0}'.format(args.filename))
+        nvim.command('tabnew {0}'.format(Path(args.filename).resolve()))
     else:
-        nvim.command('e {0}'.format(args.filename))
+        nvim.command('e {0}'.format(Path(args.filename).resolve()))
     _exit_when_deleted()
 
 def _exit_when_deleted():
