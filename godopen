@@ -16,7 +16,7 @@ parser.add_argument("-t", "--tab", help="tabnewで開いたのと同義になり
 parser.add_argument("-S", "--sync", help="同期的になるやつ", action='store_true')
 args = parser.parse_args()
 
-addr = os.environ.get("NVIM_LISTEN_ADDRESS", None)
+addr = os.environ.get("NVIM", os.environ.get("NVIM_LISTEN_ADDRESS", None))
 if not addr:
     print('not wakeup nvim.')
 
